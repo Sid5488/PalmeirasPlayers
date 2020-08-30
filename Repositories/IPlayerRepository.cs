@@ -6,9 +6,11 @@ using System.Threading.Tasks;
 
 namespace PalmeirasPlayers.Repositories
 {
-    interface IPlayerRepository
+    public interface IPlayerRepository
     {
         Task<List<Players>> GetAll();
+        int GetTotalPlayers();
+        Task<Players> GetById(int playerId);
         Players Save(Players player);
         Players Update(Players player);
         void Delete(int playerId);

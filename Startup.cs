@@ -13,6 +13,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using PalmeirasPlayers.Data;
 using PalmeirasPlayers.Repositories;
+using PalmeirasPlayers.Services;
 
 namespace PalmeirasPlayers
 {
@@ -31,7 +32,12 @@ namespace PalmeirasPlayers
             services.AddDbContext<DbPlayerContext>(opt => opt.UseMySql(Configuration.GetConnectionString("DbPlayerContext")));
             services.AddControllers();
             services.AddDbContext<DbPlayerContext>();
-            services.AddTransient<IPlayerRepository, PlayerRepository>();
+            services.AddScoped<IPlayerRepository, PlayerRepository>();
+            services.AddScoped<IPlayerService, PlayerService>();
+            services.AddCors(opt =>
+            {
+                opt.AddPolicy("AllowOrigin", policy => policy.AllowAnyOrigin());
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -41,6 +47,12 @@ namespace PalmeirasPlayers
             {
                 app.UseDeveloperExceptionPage();
             }
+            else
+            {
+                app.UseExceptionHandler("/error");
+            }
+
+            app.UseCors(options => options.AllowAnyOrigin());
 
             app.UseHttpsRedirection();
 

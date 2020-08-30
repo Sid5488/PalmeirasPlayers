@@ -17,6 +17,7 @@ namespace PalmeirasPlayers.Repositories
         {
             _context = context;
         }
+
         public async Task<List<Players>> GetAll()
         {
             var players = await _context.PlayerList
@@ -33,15 +34,7 @@ namespace PalmeirasPlayers.Repositories
             return player;
         }
 
-        public Players Update(Players player)
-        {
-            _context.PlayerList.Update(player);
-            _context.SaveChangesAsync();
-
-            return player;
-        }
-
-        public async void Delete(int id)
+        public void Delete(int id)
         {
             Players player = _context.PlayerList
                 .Where(x => x.Id == id)
@@ -50,8 +43,32 @@ namespace PalmeirasPlayers.Repositories
             if (player != null)
             {
                 _context.PlayerList.Remove(player);
-                await _context.SaveChangesAsync();
+                _context.SaveChanges();
             }
+        }
+
+        public Task<Players> GetById(int playerId)
+        {
+            var player = _context.PlayerList
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Id == playerId);
+
+            return player;
+        }
+
+        Players IPlayerRepository.Update(Players player)
+        {
+            _context.PlayerList.Update(player);
+            _context.SaveChanges();
+
+            return player;
+        }
+
+        public int GetTotalPlayers()
+        {
+            var count = _context.PlayerList.Count();
+
+            return count;
         }
     }
 }
