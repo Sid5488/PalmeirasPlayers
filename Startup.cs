@@ -37,6 +37,8 @@ namespace PalmeirasPlayers
             services.AddCors(opt =>
             {
                 opt.AddPolicy("AllowOrigin", policy => policy.AllowAnyOrigin());
+                opt.AddPolicy("AllowHeader", policy => policy.AllowAnyHeader());
+                opt.AddPolicy("AllowMethod", policy => policy.AllowAnyMethod());
             });
         }
 
@@ -52,7 +54,12 @@ namespace PalmeirasPlayers
                 app.UseExceptionHandler("/error");
             }
 
-            app.UseCors(options => options.AllowAnyOrigin());
+            app.UseCors(options =>
+            {
+                options.AllowAnyOrigin();
+                options.AllowAnyHeader();
+                options.AllowAnyMethod();
+            });
 
             app.UseHttpsRedirection();
 
